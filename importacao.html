@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Importar / Backup</title><link rel="icon" type="image/png" href="assets/logo-icone.png"><link rel="stylesheet" href="css/style.css"></head>
+<body><main>
+  <div class="tabs"><button class="on" data-t="imp">Importar JSON do sistema antigo</button><button data-t="exp">Exportar / Backup</button><button data-t="res">Restaurar backup</button></div>
+
+  <section id="t-imp">
+    <div class="card"><div class="drop">
+      <p><b>1.</b> Selecione o arquivo JSON exportado pelo sistema antigo</p>
+      <input type="file" id="arq" accept=".json,application/json" style="max-width:360px">
+      <p class="mut" id="arq-info"></p></div></div>
+    <div id="previa" style="display:none;margin-top:14px">
+      <div class="cards" id="p-kpis"></div>
+      <div class="card" style="margin-bottom:14px"><h3>2. Tipo de importação</h3>
+        <label style="font-size:14px;color:var(--txt)"><input type="radio" name="modo" value="inicial" checked style="width:auto"> <b>Importação inicial</b> — traz tudo do sistema antigo para um banco novo (vazio).</label><br>
+        <label style="font-size:14px;color:var(--txt)"><input type="radio" name="modo" value="atualiza" style="width:auto"> <b>Atualização de dados</b> — adiciona obras novas e, para as já existentes, você decide o que fazer. Nada é substituído sem sua escolha, e campos vazios no arquivo nunca apagam dados já existentes.</label>
+        <div id="aviso-modo" class="alerta al-amar" style="display:none;margin-top:10px"></div></div>
+      <div class="card" style="margin-bottom:14px"><h3>Inconsistências e avisos</h3><div id="p-avisos" class="lista-av"></div></div>
+      <div class="card" style="margin-bottom:14px"><h3>3. Obras encontradas</h3><div class="tw"><table><thead><tr><th>Importar</th><th>Obra</th><th>Cliente</th><th>Situação</th><th>Etapas</th><th>Já existe?</th><th>Se já existir</th></tr></thead><tbody id="p-tab"></tbody></table></div></div>
+      <div class="card"><h3>4. Confirmar</h3><label style="font-size:14px;color:var(--txt)"><input type="checkbox" id="ok" style="width:auto"> Revisei o resumo e quero importar os dados selecionados.</label>
+        <p><button class="btn" id="importar" disabled>Importar dados</button> <span id="prog" class="mut"></span></p></div>
+    </div>
+  </section>
+
+  <section id="t-exp" style="display:none">
+    <div class="grid2">
+      <div class="card"><h3>Backup completo (recomendado)</h3><p class="mut">Todas as tabelas do sistema em um único arquivo JSON, que pode ser restaurado depois.</p><button class="btn" id="x-full">Gerar backup completo</button></div>
+      <div class="card"><h3>Exportar uma obra</h3><select id="x-obra"></select><p></p><button class="btn" id="x-uma">Exportar obra selecionada</button></div>
+      <div class="card"><h3>Obras, etapas e atividades</h3><p class="mut">Sem diário, comentários e histórico.</p><button class="btn" id="x-obras">Exportar obras, etapas e atividades</button></div>
+      <div class="card"><h3>Formato do sistema antigo</h3><p class="mut">Gera o JSON no mesmo formato que o sistema antigo exportava (útil durante a transição).</p><button class="btn sec" id="x-old">Exportar no formato antigo</button></div>
+    </div>
+  </section>
+
+  <section id="t-res" style="display:none">
+    <div class="card"><h3>Restaurar a partir de um backup do novo sistema</h3>
+      <p class="mut">Registros com o mesmo identificador serão <b>atualizados</b> com o conteúdo do backup; nada existente é apagado.</p>
+      <input type="file" id="r-arq" accept=".json" style="max-width:360px"><div id="r-info" style="margin:12px 0"></div><button class="btn" id="r-go" disabled>Restaurar</button> <span id="r-prog" class="mut"></span></div>
+  </section>
+</main>
+<script src="js/config.js"></script><script src="js/api.js"></script><script src="js/app.js"></script><script src="js/legado.js"></script><script src="js/importacao.js"></script>
+</body></html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Acesso — Gestão de Obras</title><link rel="icon" type="image/png" href="assets/logo-icone.png"><link rel="stylesheet" href="css/style.css"></head>
+<body><div class="login"><div class="box">
+  <img class="banner-login" id="bl" src="assets/banner.webp" alt="Dinâmica Elétrica"><h1 id="nome">Gestão de Obras</h1><p>Informe a senha para acessar o sistema</p>
+  <div class="pw"><input id="senha" type="password" placeholder="Senha de acesso" autocomplete="current-password" autofocus>
+    <button type="button" id="ver" title="Mostrar/ocultar senha">👁</button></div>
+  <label style="display:flex;gap:8px;align-items:center;font-weight:400;margin-top:10px;text-align:left"><input type="checkbox" id="lembrar" style="width:auto" checked> Lembrar neste aparelho</label>
+  <div class="erro-msg" id="msg"></div>
+  <button class="btn" id="entrar" style="width:100%;padding:12px">ACESSAR</button>
+</div></div>
+<script src="js/config.js"></script><script src="js/api.js"></script>
+<script>
+document.getElementById('nome').textContent = APP_CONFIG.NOME_SISTEMA; document.getElementById('bl').alt = APP_CONFIG.NOME_EMPRESA;
+const s = document.getElementById('senha'), m = document.getElementById('msg'), b = document.getElementById('entrar');
+if (new URLSearchParams(location.search).get('expirou')) m.textContent = 'Sessão expirada. Informe a senha novamente.';
+else if (Api.logado()) location.replace('dashboard.html');
+document.getElementById('ver').onclick = () => { s.type = s.type === 'password' ? 'text' : 'password'; };
+async function entrar() {
+  m.textContent = ''; b.disabled = true; b.textContent = 'Verificando...';
+  try {
+    if (await Api.login(s.value, document.getElementById('lembrar').checked)) location.replace('dashboard.html');
+    else { m.textContent = 'Senha incorreta. Tente novamente.'; s.select(); }
+  } catch (e) { m.textContent = /muitas_tentativas/.test(e.message) ? 'Muitas tentativas. Aguarde 15 minutos.' : e.message; }
+  b.disabled = false; b.textContent = 'ACESSAR';
+}
+b.onclick = entrar; s.addEventListener('keydown', (e) => e.key === 'Enter' && entrar());
+</script></body></html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Obras</title><link rel="icon" type="image/png" href="assets/logo-icone.png"><link rel="stylesheet" href="css/style.css"></head>
+<body><main>
+  <div class="card filtros">
+    <div style="flex:2"><label>Buscar</label><input id="busca" placeholder="Nome, cliente, endereço ou código"></div>
+    <div><label>Situação</label><select id="fs"></select></div>
+    <button class="btn" id="nova">+ Nova obra</button>
+  </div>
+  <div class="card"><div class="tw"><table><thead><tr><th>Obra</th><th>Cliente</th><th>Endereço</th><th>Situação</th><th style="width:140px">Progresso</th><th>Prev. início</th><th>Prev. conclusão</th><th></th></tr></thead><tbody id="tab"></tbody></table></div></div>
+</main>
+<datalist id="dl-resp"></datalist>
+<script src="js/config.js"></script><script src="js/api.js"></script><script src="js/app.js"></script><script src="js/obras.js"></script>
+</body></html>
