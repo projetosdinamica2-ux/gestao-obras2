@@ -29,6 +29,25 @@ function filtrar() {
   return { obras, etapas };
 }
 
+
+function porTipo(obras, etapas) {
+  const fase = $('#f-fase').value, nomeObra = (id) => (D.obras.find((o) => o.id === id) || {}).nome || '—';
+  const E = etapas.filter((e) => fase === 'Todas' || faseEtapa(e.nome) === fase).map((e) => ({ ...e, tipo: tipoEtapa(e.nome), sit: efetivo(e.status, e.data_fim) }));
+  const tipos = [...new Set(E.map((e) => e.tipo))].sort((a, b) => (a === 'Outros') - (b === 'Outros') || E.filter((e) => e.tipo === b).length - E.filter((e) => e.tipo === a).length);
+  const leg = ['concluida', 'em_andamento', 'pendente', 'atrasada'].map((k) => `<span><i style="background:${COR[k]}"></i>${ST_ETAPA[k]}</span>`).join('');
+  $('#leg').innerHTML = $('#leg2').innerHTML = leg;
+  $('#tipos').innerHTML = tipos.map((t) => { const ex = E.filter((e) => e.tipo === t), ids = [...new Set(ex.map((e) => e.obra_id))];
+    const chips = ids.map((id) => { const ss = ex.filter((e) => e.obra_id === id).map((e) => e.sit);
+      const s = ss.every((v) => v === 'concluida') ? 'concluida' : ss.includes('atrasada') ? 'atrasada' : ss.includes('em_andamento') ? 'em_andamento' : 'pendente';
+      return `<span class="chip" style="border-color:${COR[s]}">${esc(nomeObra(id))}</span>`; }).join('');
+    return `<div class="tp"><div class="th"><b>${esc(t)}</b><span>${ids.length} obra(s) · ${ex.length} etapa(s)</span></div><div class="chips">${chips}</div></div>`; }).join('') || '<p class="mut">Nenhuma etapa para os filtros.</p>';
+  const ks = ['concluida', 'em_andamento', 'pendente', 'atrasada'];
+  $('#andtipo').innerHTML = tipos.map((t) => { const ex = E.filter((e) => e.tipo === t), c = {};
+    ks.forEach((k) => (c[k] = ex.filter((e) => (k === 'pendente' ? ['pendente', 'pausada', 'nao_iniciada'].includes(e.sit) : e.sit === k)).length));
+    return `<div class="sr"><b>${esc(t)}</b><div class="t">${ks.map((k) => (c[k] ? `<i style="width:${c[k] / ex.length * 100}%;background:${COR[k]}">${c[k]}</i>` : '')).join('')}</div>
+      <small><b>${c.concluida}</b> ${c.concluida === 1 ? 'pronta' : 'prontas'} · <b>${c.em_andamento}</b> em andamento<br>${Math.round(c.concluida / ex.length * 100)}% concluído (${ex.length} etapas)</small></div>`; }).join('');
+}
+
 const cnt = (arr, f) => arr.reduce((m, x) => { const k = f(x); m[k] = (m[k] || 0) + 1; return m; }, {});
 function grafico(id, cfg) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart($('#' + id), { ...cfg, options: { responsive: true, maintainAspectRatio: false, ...(cfg.options || {}) } }); }
 
@@ -62,6 +81,8 @@ function render() {
   grafico('g5', { type: 'bar', data: { labels: rn, datasets: [{ label: 'Concluídas', data: rn.map((n) => porR[n].c), backgroundColor: '#16a34a' }, { label: 'Em aberto', data: rn.map((n) => porR[n].a), backgroundColor: '#f59e0b' }] },
     options: { scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }, plugins: { legend: { position: 'bottom' } } } });
 
+  porTipo(obras, etapas);
+
   // Alertas
   const al = [], add = (c, t) => al.push(`<div class="alerta al-${c}">${t}</div>`);
   obras.filter((o) => efetivo(o.status, o.data_conclusao_prevista) === 'atrasada').forEach((o) => add('verm', `<b>Obra atrasada:</b> ${esc(o.nome)} — previsão ${fmtData(o.data_conclusao_prevista)} (${dias(o.data_conclusao_prevista, hoje)} dias)`));
@@ -85,7 +106,7 @@ function render() {
 (async () => {
   if (!montarPagina('dashboard.html', 'Dashboard')) return;
   try { D = await carregarTudo(); montarFiltros(); render();
-    $$('.filtros input,.filtros select').forEach((el) => (el.onchange = render));
+    $$('.filtros input,.filtros select').forEach((el) => (el.onchange = render)); $('#f-fase').onchange = render;
     $('#limpar').onclick = () => { $$('.filtros input,.filtros select').forEach((el) => (el.value = '')); render(); };
     if (!D.obras.length) toast('Nenhuma obra cadastrada ainda. Use "Importar / Backup" para importar o JSON do sistema antigo.');
   } catch (e) { erro(e); }

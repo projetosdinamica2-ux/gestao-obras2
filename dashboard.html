@@ -20,6 +20,9 @@
     <div class="card"><h3>Produtividade e carga por responsável (etapas)</h3><div class="chart"><canvas id="g5"></canvas></div></div>
     <div class="card"><h3>Alertas</h3><div id="alertas" class="lista-av" style="max-height:280px"></div></div>
   </div>
+  <div class="card" style="margin-bottom:14px"><div class="row" style="justify-content:space-between;align-items:flex-end"><h3 style="margin:0">Obras por tipo de etapa</h3><div style="min-width:200px"><label>Fase das etapas</label><select id="f-fase"><option>Execução</option><option>Materiais</option><option>Projeto</option><option>Todas</option></select></div></div>
+    <p class="mut" style="margin:6px 0 4px">Cada etiqueta é uma obra; a cor mostra a situação da etapa naquela obra.</p><div class="leg" id="leg"></div><div id="tipos"></div></div>
+  <div class="card" style="margin-bottom:14px"><h3>Andamento por tipo de etapa</h3><div class="leg" id="leg2"></div><div id="andtipo"></div></div>
   <div class="card"><h3>Obras</h3><div class="tw"><table><thead><tr><th>Obra</th><th>Cliente</th><th>Responsável</th><th>Situação</th><th style="width:150px">Progresso</th><th>Prev. conclusão</th></tr></thead><tbody id="tab"></tbody></table></div></div>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>

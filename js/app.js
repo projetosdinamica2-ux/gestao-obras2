@@ -80,3 +80,8 @@ async function carregarTudo() {
   const [obras, etapas, colaboradores] = await Promise.all([Api.list('obras'), Api.list('etapas'), Api.list('colaboradores')]);
   return { obras, etapas, colaboradores };
 }
+
+// Classificação das etapas por TIPO e FASE, a partir de palavras no nome da etapa.
+const TIPOS_ETAPA = [['Subestação', /subestac/], ['Quadros', /quadro/], ['Instalação', /instalac/], ['Racks', /rack/], ['SPDA', /spda/], ['Rede elétrica', /agrupamento|deslocamento|\brede\b/]];
+function tipoEtapa(nome) { const s = norm(nome); for (const [t, r] of TIPOS_ETAPA) if (r.test(s)) return t; return 'Outros'; }
+function faseEtapa(nome) { const s = norm(nome); if (/^(materia|relacao de mater|lista|ferragens)/.test(s)) return 'Materiais'; if (/projeto/.test(s)) return 'Projeto'; return 'Execução'; }

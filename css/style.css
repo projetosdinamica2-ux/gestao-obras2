@@ -72,3 +72,10 @@ input:focus,select:focus,textarea:focus{outline:2px solid #fde68a;border-color:v
 .login{background:linear-gradient(135deg,#1c2026,#3c454e 65%,#4a535d)}
 .login .box{box-shadow:0 0 0 3px rgba(252,192,0,.9),0 20px 60px rgba(0,0,0,.45)}
 .login h1{color:#2b3038}
+
+/* gráficos por tipo de etapa */
+.tp{border:1px solid var(--bor);border-radius:8px;padding:8px 10px;margin-bottom:8px}.tp .th{display:flex;justify-content:space-between;gap:8px}.tp .th span{color:var(--mut);font-size:12px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.chip{font-size:12px;padding:2px 8px 2px 6px;border-radius:5px;border-left:5px solid;background:var(--bg)}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;margin:2px 0 10px}.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+.sr{display:grid;grid-template-columns:110px 1fr 200px;gap:10px;align-items:center;margin:8px 0}.sr .t{display:flex;height:22px;border-radius:6px;overflow:hidden;background:var(--bar)}.sr .t i{display:grid;place-items:center;color:#fff;font-size:12px;font-style:normal;font-weight:700}.sr small{color:var(--mut);line-height:1.25}
+@media(max-width:700px){.sr{grid-template-columns:80px 1fr}.sr small{grid-column:1/-1}}
