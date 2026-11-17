@@ -57,7 +57,7 @@ function baixar(nome, conteudo, tipo = 'application/json') {
 }
 
 const MENU = [
-  ['dashboard.html', '📊', 'Dashboard'], ['obras.html', '🏗️', 'Obras e etapas'],
+  ['dashboard.html', '📊', 'Dashboard'], ['obras.html', '🏗️', 'Obras e etapas'], ['relatorios.html', '📄', 'Relatórios'],
   ['importacao.html', '📥', 'Importar / Backup'], ['configuracoes.html', '⚙️', 'Configurações']
 ];
 function montarPagina(ativa, titulo) {

@@ -176,3 +176,16 @@ Aba **Importar JSON do sistema antigo**:
 | Cai na tela de senha sozinho | Sessão de 12 h expirou; é normal |
 | Dados sumiram da tela | F5; abra `gestao-obras-v2.json` no Drive e veja se os dados estão lá |
 | Obra excluída por engano | Restaurar o último backup (7.2) |
+
+---
+
+## Relatórios (menu **Relatórios**)
+
+1. No menu lateral, clique em **Relatórios**. A tela mostra, à esquerda, as opções e, à direita, a prévia das páginas A4.
+2. Em **O que incluir**, marque ou desmarque: **Dashboard** (indicadores e gráficos por tipo de etapa), **Detalhamento das obras** (tabela de etapas), **Observações** e **Padronizar nomes**.
+3. Em **Fase das etapas nos gráficos por tipo**, escolha Execução, Materiais, Projeto ou Todas.
+4. Em **Obras no relatório**, marque só as obras que quer (há busca e filtro por situação, e os botões *Marcar visíveis* / *Limpar visíveis*). A prévia se atualiza na hora.
+5. **PDF:** clique em **Imprimir / Salvar PDF**. Na janela que abrir, escolha **Salvar como PDF**, margens **Nenhuma** e marque **Gráficos de fundo** (para sair com as cores).
+6. **Excel:** clique em **Exportar Excel**. O arquivo `.xlsx` tem uma aba *Obras* (resumo) e uma aba *Etapas* (todas as etapas das obras selecionadas, com tipo e fase).
+
+Os relatórios usam sempre os dados atuais do sistema. Se alguém alterou algo, aperte F5 antes de gerar.
