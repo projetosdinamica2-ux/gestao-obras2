@@ -79,3 +79,17 @@ input:focus,select:focus,textarea:focus{outline:2px solid #fde68a;border-color:v
 .leg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;margin:2px 0 10px}.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
 .sr{display:grid;grid-template-columns:110px 1fr 200px;gap:10px;align-items:center;margin:8px 0}.sr .t{display:flex;height:22px;border-radius:6px;overflow:hidden;background:var(--bar)}.sr .t i{display:grid;place-items:center;color:#fff;font-size:12px;font-style:normal;font-weight:700}.sr small{color:var(--mut);line-height:1.25}
 @media(max-width:700px){.sr{grid-template-columns:80px 1fr}.sr small{grid-column:1/-1}}
+
+/* clique em obra no dashboard */
+.lnk{cursor:pointer}.chip.lnk:hover{background:#fff3c4}tr.lnk:hover td{background:#fff8dc}.alerta.lnk:hover{filter:brightness(.96)}
+
+/* cronograma */
+.cr-card{box-shadow:none;border:1px solid var(--bor);margin-top:14px}
+.cr{position:relative;--lb:180px}
+.cr-ax{display:flex;justify-content:space-between;margin-left:var(--lb);font-size:12px;color:var(--mut);margin-bottom:6px}
+.cr-row{display:flex;align-items:center;height:30px}
+.cr-lb{width:var(--lb);flex:none;padding-right:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}.cr-lb span{color:var(--mut)}
+.cr-tk{position:relative;flex:1;height:100%;border-left:1px solid #cbd5e1}
+.cr-bar{position:absolute;top:50%;height:14px;transform:translateY(-50%);background:#b9cde0;border-radius:4px;overflow:hidden}.cr-bar i{display:block;height:100%;background:#1f5fa6}
+.cr-hj{position:absolute;top:22px;bottom:0;left:calc(var(--lb) + (100% - var(--lb)) * var(--f));width:2px;background:#e5a900;pointer-events:none}
+@media(max-width:700px){.cr{--lb:100px}.cr-lb span{display:none}}
