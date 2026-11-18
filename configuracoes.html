@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Configurações</title><link rel="icon" type="image/png" href="assets/logo-icone.png"><link rel="stylesheet" href="css/style.css"></head>
+<title>Configurações</title><link rel="icon" type="image/png" href="assets/logo-icone.png"><link rel="stylesheet" href="css/style.css?v=202611181929"></head>
 <body><main>
   <div class="card" style="max-width:460px"><h3>Alterar senha de acesso</h3>
     <p class="mut">A nova senha vale para todos os computadores. Os outros acessos abertos serão encerrados.</p>
@@ -9,7 +9,7 @@
     <label>Repetir nova senha</label><input type="password" id="r" autocomplete="new-password"><p></p>
     <button class="btn" id="go">Alterar senha</button></div>
 </main>
-<script src="js/config.js"></script><script src="js/api.js"></script><script src="js/app.js"></script>
+<script src="js/config.js?v=202611181929"></script><script src="js/api.js?v=202611181929"></script><script src="js/app.js?v=202611181929"></script>
 <script>
 if (montarPagina('configuracoes.html', 'Configurações')) $('#go').onclick = async () => {
   const a = $('#a').value, n = $('#n').value;

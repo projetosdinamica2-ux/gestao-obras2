@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Acesso — Gestão de Obras</title><link rel="icon" type="image/png" href="assets/logo-icone.png"><link rel="stylesheet" href="css/style.css"></head>
+<title>Acesso — Gestão de Obras</title><link rel="icon" type="image/png" href="assets/logo-icone.png"><link rel="stylesheet" href="css/style.css?v=202611181929"></head>
 <body><div class="login"><div class="box">
   <img class="banner-login" id="bl" src="assets/banner.webp" alt="Dinâmica Elétrica"><h1 id="nome">Gestão de Obras</h1><p>Informe a senha para acessar o sistema</p>
   <div class="pw"><input id="senha" type="password" placeholder="Senha de acesso" autocomplete="current-password" autofocus>
@@ -9,7 +9,7 @@
   <div class="erro-msg" id="msg"></div>
   <button class="btn" id="entrar" style="width:100%;padding:12px">ACESSAR</button>
 </div></div>
-<script src="js/config.js"></script><script src="js/api.js"></script>
+<script src="js/config.js?v=202611181929"></script><script src="js/api.js?v=202611181929"></script>
 <script>
 document.getElementById('nome').textContent = APP_CONFIG.NOME_SISTEMA; document.getElementById('bl').alt = APP_CONFIG.NOME_EMPRESA;
 const s = document.getElementById('senha'), m = document.getElementById('msg'), b = document.getElementById('entrar');

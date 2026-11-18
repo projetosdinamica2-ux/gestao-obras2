@@ -39,7 +39,7 @@ function porTipo(obras, etapas) {
   $('#tipos').innerHTML = tipos.map((t) => { const ex = E.filter((e) => e.tipo === t), ids = [...new Set(ex.map((e) => e.obra_id))];
     const chips = ids.map((id) => { const ss = ex.filter((e) => e.obra_id === id).map((e) => e.sit);
       const s = ss.every((v) => v === 'concluida') ? 'concluida' : ss.includes('atrasada') ? 'atrasada' : ss.includes('em_andamento') ? 'em_andamento' : 'pendente';
-      return `<span class="chip" style="border-color:${COR[s]}">${esc(nomeObra(id))}</span>`; }).join('');
+      return `<span class="chip lnk" data-obra="${esc(id)}" title="Abrir obra" style="border-color:${COR[s]}">${esc(nomeObra(id))}</span>`; }).join('');
     return `<div class="tp"><div class="th"><b>${esc(t)}</b><span>${ids.length} obra(s) · ${ex.length} etapa(s)</span></div><div class="chips">${chips}</div></div>`; }).join('') || '<p class="mut">Nenhuma etapa para os filtros.</p>';
   const ks = ['concluida', 'em_andamento', 'pendente', 'atrasada'];
   $('#andtipo').innerHTML = tipos.map((t) => { const ex = E.filter((e) => e.tipo === t), c = {};
@@ -84,24 +84,27 @@ function render() {
   porTipo(obras, etapas);
 
   // Alertas
-  const al = [], add = (c, t) => al.push(`<div class="alerta al-${c}">${t}</div>`);
-  obras.filter((o) => efetivo(o.status, o.data_conclusao_prevista) === 'atrasada').forEach((o) => add('verm', `<b>Obra atrasada:</b> ${esc(o.nome)} — previsão ${fmtData(o.data_conclusao_prevista)} (${dias(o.data_conclusao_prevista, hoje)} dias)`));
+  const al = [], add = (c, t, oid) => al.push(`<div class="alerta al-${c}${oid ? ' lnk' : ''}"${oid ? ` data-obra="${esc(oid)}" title="Abrir obra"` : ''}>${t}</div>`);
+  obras.filter((o) => efetivo(o.status, o.data_conclusao_prevista) === 'atrasada').forEach((o) => add('verm', `<b>Obra atrasada:</b> ${esc(o.nome)} — previsão ${fmtData(o.data_conclusao_prevista)} (${dias(o.data_conclusao_prevista, hoje)} dias)`, o.id));
   const em = (e) => D.obras.find((o) => o.id === e.obra_id);
-  etapas.filter((e) => efetivo(e.status, e.data_fim) === 'atrasada').slice(0, 15).forEach((e) => add('verm', `<b>Etapa vencida:</b> ${esc(e.nome)} (${esc((em(e) || {}).nome)}) — venceu em ${fmtData(e.data_fim)}`));
+  etapas.filter((e) => efetivo(e.status, e.data_fim) === 'atrasada').slice(0, 15).forEach((e) => add('verm', `<b>Etapa vencida:</b> ${esc(e.nome)} (${esc((em(e) || {}).nome)}) — venceu em ${fmtData(e.data_fim)}`, e.obra_id));
   const em7 = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10);
-  etapas.filter((e) => e.status !== 'concluida' && e.data_fim && e.data_fim >= hoje && e.data_fim <= em7).forEach((e) => add('amar', `<b>Vence em breve:</b> ${esc(e.nome)} (${esc((em(e) || {}).nome)}) — ${fmtData(e.data_fim)}`));
+  etapas.filter((e) => e.status !== 'concluida' && e.data_fim && e.data_fim >= hoje && e.data_fim <= em7).forEach((e) => add('amar', `<b>Vence em breve:</b> ${esc(e.nome)} (${esc((em(e) || {}).nome)}) — ${fmtData(e.data_fim)}`, e.obra_id));
   const h30 = Date.now() - 30 * 864e5;
   obras.filter((o) => o.status === 'em_andamento').forEach((o) => { const ult = Math.max(new Date(o.atualizado_em), ...D.etapas.filter((e) => e.obra_id === o.id).map((e) => new Date(e.atualizado_em)));
-    if (ult < h30) add('amar', `<b>Sem atualização há mais de 30 dias:</b> ${esc(o.nome)}`); });
+    if (ult < h30) add('amar', `<b>Sem atualização há mais de 30 dias:</b> ${esc(o.nome)}`, o.id); });
   const sr = etapas.filter((e) => !e.responsavel_nome && e.status !== 'concluida'); if (sr.length) add('amar', `<b>${sr.length} etapa(s) em aberto sem responsável.</b>`);
   Object.entries(porR).filter(([n, v]) => n[0] !== '(' && v.a >= 8).forEach(([n, v]) => add('azul', `<b>Carga alta:</b> ${esc(n)} tem ${v.a} etapas em aberto.`));
   $('#alertas').innerHTML = al.join('') || '<div class="alerta al-verde">Nenhum alerta no momento.</div>';
 
   $('#tab').innerHTML = obras.length ? obras.slice().sort((a, b) => (a.data_conclusao_prevista || '9').localeCompare(b.data_conclusao_prevista || '9')).map((o) => {
-    const p = progressoObra(o, D.etapas); return `<tr><td><b>${esc(o.nome)}</b></td><td>${esc(o.cliente || '—')}</td><td>${esc(respObra(o, D.etapas))}</td>
+    const p = progressoObra(o, D.etapas); return `<tr class="lnk" data-obra="${esc(o.id)}" title="Abrir obra"><td><b>${esc(o.nome)}</b></td><td>${esc(o.cliente || '—')}</td><td>${esc(respObra(o, D.etapas))}</td>
       <td>${badge(efetivo(o.status, o.data_conclusao_prevista))}</td><td>${barra(p)}<small class="mut">${p}%</small></td><td>${fmtData(o.data_conclusao_prevista)}</td></tr>`; }).join('')
     : '<tr><td colspan="6" class="vazio">Nenhuma obra para os filtros selecionados.</td></tr>';
 }
+
+// Clique em qualquer obra do dashboard leva para ela na página de obras.
+document.addEventListener('click', (ev) => { const a = ev.target.closest('[data-obra]'); if (a) location.href = 'obras.html?abrir=' + encodeURIComponent(a.dataset.obra); });
 
 (async () => {
   if (!montarPagina('dashboard.html', 'Dashboard')) return;

@@ -36,6 +36,23 @@ function formObra(o) {
       fechar(); toast('Obra salva.', 'ok'); await recarregar(); } }] });
 }
 
+
+// Cronograma (Gantt): barra clara = período previsto da etapa; barra escura = percentual concluído; linha laranja = hoje.
+function cronograma(es, o) {
+  const T = es.filter((e) => e.data_inicio || e.data_fim).map((e) => ({ e, i: e.data_inicio || e.data_fim, f: e.data_fim || e.data_inicio }));
+  if (!T.length) return '<div class="card cr-card"><h3>Cronograma</h3><p class="mut" style="margin:0">Informe as datas de início e término das etapas para ver o cronograma.</p></div>';
+  const ini = T.reduce((m, t) => (t.i < m ? t.i : m), T[0].i), fim = T.reduce((m, t) => (t.f > m ? t.f : m), T[0].f);
+  const tot = Math.max(1, dias(ini, fim)), hoje = hojeISO(), pos = (d) => Math.min(100, Math.max(0, (dias(ini, d) / tot) * 100));
+  const linhas = T.map(({ e, i, f }) => {
+    const l = pos(i), w = Math.max(1.2, Math.min(100 - l, pos(f) - l)), p = Math.min(100, Math.max(0, Number(e.percentual) || 0));
+    const tip = `${e.nome}${e.responsavel_nome ? ' — ' + e.responsavel_nome : ''}\n${fmtData(e.data_inicio)} a ${fmtData(e.data_fim)} · ${p}% concluído`;
+    return `<div class="cr-row"><div class="cr-lb" title="${esc(tip)}">${esc(e.nome)}${e.responsavel_nome ? ` <span>${esc(e.responsavel_nome)}</span>` : ''}</div>
+      <div class="cr-tk"><div class="cr-bar" style="left:${l}%;width:${w}%" title="${esc(tip)}"><i style="width:${p}%"></i></div></div></div>`;
+  }).join('');
+  const f = hoje >= ini && hoje <= fim ? `<div class="cr-hj" style="--f:${dias(ini, hoje) / tot}" title="Hoje: ${fmtData(hoje)}"></div>` : '';
+  return `<div class="card cr-card"><h3>Cronograma</h3><div class="cr"><div class="cr-ax"><span>${fmtData(ini)}</span><span>${fmtData(fim)}</span></div>${linhas}${f}</div></div>`;
+}
+
 function abrirObra(id) {
   const o = D.obras.find((x) => x.id === id), es = D.etapas.filter((e) => e.obra_id === id).sort((a, b) => a.ordem - b.ordem), p = progressoObra(o, D.etapas);
   const m = modal({ titulo: o.nome, largo: true, corpo: `
@@ -47,7 +64,8 @@ function abrirObra(id) {
     ${es.map((e) => `<tr><td>${e.ordem}</td><td><b>${esc(e.nome)}</b></td><td>${esc(e.responsavel_nome || '—')}</td><td>${fmtData(e.data_inicio)}</td><td>${fmtData(e.data_fim)}</td>
       <td>${barra(Number(e.percentual))}<small>${Number(e.percentual)}%</small></td><td>${badge(efetivo(e.status, e.data_fim), ST_ETAPA)}</td><td>${esc(e.observacoes || '')}</td>
       <td class="row"><button class="btn sm sec" data-e="edit" data-id="${e.id}">Editar</button><button class="btn sm verm" data-e="del" data-id="${e.id}">Excluir</button></td></tr>`).join('') || '<tr><td colspan="9" class="vazio">Nenhuma etapa cadastrada.</td></tr>'}
-    </tbody></table></div>` });
+    </tbody></table></div>
+    ${cronograma(es, o)}` });
   $('#ne', m.el).onclick = () => { m.fechar(); formEtapa(null, id); };
   m.el.addEventListener('click', async (ev) => { const b = ev.target.closest('[data-e]'); if (!b) return; const e = D.etapas.find((x) => x.id === b.dataset.id);
     if (b.dataset.e === 'edit') { m.fechar(); formEtapa(e, id); }
@@ -83,5 +101,8 @@ function formEtapa(e, obraId) {
     if (b.dataset.a === 'abrir') abrirObra(o.id); else if (b.dataset.a === 'edit') formObra(o);
     else if (await confirmar(`Excluir a obra <b>${esc(o.nome)}</b> e todas as suas etapas? Esta ação não pode ser desfeita (faça um backup antes).`, 'Excluir obra')) {
       try { await Api.del('obras', o.id); await Api.log('obra', o.id, null, 'exclusao', `Obra "${o.nome}" excluída.`); toast('Obra excluída.', 'ok'); await recarregar(); } catch (e) { erro(e); } } };
-  try { await recarregar(); } catch (e) { erro(e); }
+  try { await recarregar(); } catch (e) { erro(e); return; }
+  // Vindo do dashboard: obras.html?abrir=ID abre direto a obra clicada.
+  const alvo = new URLSearchParams(location.search).get('abrir');
+  if (alvo) { history.replaceState(null, '', 'obras.html'); if (D.obras.some((x) => x.id === alvo)) abrirObra(alvo); else toast('Obra não encontrada.', 'erro'); }
 })();
